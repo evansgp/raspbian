@@ -5,8 +5,20 @@
 set -e
 set -u
 
+host=raspberrypi
+
+for i in "$@"
+do
+case $i in
+    -h=*|--host=*)
+    host="${i#*=}"
+    shift
+    ;;
+esac
+done
+
 # enable only ssh key auth for pi@rpi
-echo "Default password from ISO is 'raspberry'"
-ssh-copy-id pi@rpi
-scp bootstrap.sh pi@rpi:/tmp/bootstrap.sh
-ssh pi@rpi sudo /bin/bash /tmp/bootstrap.sh
+echo "Connecting to $host. Default password from ISO is 'raspberry'"
+ssh-copy-id pi@$host
+scp bootstrap.sh pi@$host:/tmp/bootstrap.sh
+ssh pi@$host sudo /bin/bash /tmp/bootstrap.sh
